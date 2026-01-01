@@ -392,23 +392,30 @@
   }
   buttons.forEach(b=> b.addEventListener('click', ()=> setFilter(b.getAttribute('data-filter'))));
 
-  // AJAX Add to Cart
+  // AJAX Add to Cart (requires login)
   document.querySelectorAll('.menu-card form').forEach(function(form) {
     form.addEventListener('submit', function(e) {
       e.preventDefault();
+      // if not authenticated, show login modal
+      if (!window.isAuthenticated) {
+        if (window.showLoginModal) window.showLoginModal();
+        return;
+      }
       const url = form.action;
       const formData = new FormData(form);
       // Add CSRF token
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
       fetch(url, {
         method: 'POST',
-        headers: { 'X-CSRFToken': csrftoken },
+        headers: { 'X-CSRFToken': csrftoken, 'X-Requested-With': 'XMLHttpRequest' },
         body: formData
       })
-      .then(response => {
-        if (response.ok) {
-          // Optionally update cart count or show a message
+      .then(response => response.json())
+      .then(json => {
+        if (json && json.success) {
           alert('Item added to cart!');
+        } else if (json && json.error === 'login_required') {
+          if (window.showLoginModal) window.showLoginModal();
         } else {
           alert('Failed to add item to cart.');
         }

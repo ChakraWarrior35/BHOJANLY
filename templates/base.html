@@ -156,7 +156,7 @@
       {% comment %} add cart button in nav bar {% endcomment %}
        
       <div class="d-flex align-items-center nav-actions">
-        <a href="/cart/" class="btn btn-sign">Cart</a>
+        <a href="/cart/" class="btn btn-sign requires-login">Cart</a>
         {% if request.session.user_id %}
           <span style="color:#fff; margin-left:6px; margin-right:6px;">Hi, {{ request.session.user_name }}</span>
           <a href="{% url 'logout' %}" class="btn btn-sign">Logout</a>
@@ -173,6 +173,54 @@
       </div>
     {% endif %}
     {% block body %}{% endblock body %}
+
+    <!-- Login modal (shows when user tries to access cart/add-to-cart while not logged in) -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background:#111;color:#fff;border-radius:12px;">
+          <div class="modal-header">
+            <h5 class="modal-title">Please log in</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>You need to log in to continue.</p>
+            <form method="post" action="{% url 'login' %}" id="modal-login-form">
+              {% csrf_token %}
+              <div class="mb-3">
+                <input name="username" placeholder="Username / Email / Phone" class="form-control" />
+              </div>
+              <div class="mb-3">
+                <input type="password" name="password" placeholder="Password" class="form-control" />
+              </div>
+              <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">Log in</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Authentication flag for client-side checks
+      window.isAuthenticated = {% if request.session.user_id %}true{% else %}false{% endif %};
+      window.showLoginModal = function() {
+        var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+        loginModal.show();
+      };
+
+      // Intercept clicks to elements that require login (cart link, etc.)
+      document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.requires-login').forEach(function(el) {
+          el.addEventListener('click', function(e) {
+            if (!window.isAuthenticated) {
+              e.preventDefault();
+              window.showLoginModal();
+            }
+          });
+        });
+      });
+    </script>
     {% comment %} %Footer {% endcomment %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>

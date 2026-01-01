@@ -84,10 +84,7 @@
                 {% endfor %}
             </table>
             <h3>Total: ₹{{ total }}</h3>
-            <form method="post" action="{% url 'buy' %}">
-                {% csrf_token %}
-                <button type="submit">Buy</button>
-            </form>
+            <a href="{% url 'buy' %}"><button type="button">Buy</button></a>
         {% else %}
             <H1><p>Your cart is empty.</p>
         {% endif %}
