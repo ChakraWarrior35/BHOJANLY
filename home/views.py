@@ -46,7 +46,7 @@ from django.shortcuts import render, HttpResponse, redirect
 from django.http import JsonResponse
 from datetime import datetime
 from home.models import Contact
-# Create your views here.
+
 def index(request):
     return render(request, 'index.html')
 
@@ -83,14 +83,14 @@ def delivery(request):
     return render(request, 'delivery.html')
 
 def cart(request):
-    # Require login to view cart
+   
     if not request.session.get('user_id'):
         from django.contrib import messages as _messages
         _messages.info(request, 'Please log in to view your cart.')
         return redirect('login')
 
     cart = request.session.get('cart', [])
-    # A simple menu mapping (id -> details). In a real app, use a database.
+    
     menu = {
         1: {'name': 'Burger', 'price': 120},
         2: {'name': 'Chicken Burger', 'price': 120},
@@ -134,9 +134,9 @@ def cart(request):
 
 def add_to_cart(request, item_id):
     if request.method == 'POST':
-        # require login to add to cart
+        
         if not request.session.get('user_id'):
-            # if AJAX request, return JSON error; otherwise redirect to login
+          
             if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.META.get('HTTP_ACCEPT', '').find('application/json') != -1:
                 return JsonResponse({'success': False, 'error': 'login_required'}, status=401)
             from django.contrib import messages as _messages
@@ -145,7 +145,7 @@ def add_to_cart(request, item_id):
 
         quantity = int(request.POST.get('quantity', 1))
         cart = request.session.get('cart', [])
-        # Check if item already in cart
+        
         for item in cart:
             if item['item_id'] == item_id:
                 item['quantity'] += quantity
@@ -153,7 +153,7 @@ def add_to_cart(request, item_id):
         else:
             cart.append({'item_id': item_id, 'quantity': quantity})
         request.session['cart'] = cart
-        # If AJAX, return JSON success; otherwise redirect to cart page
+        
         if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.META.get('HTTP_ACCEPT', '').find('application/json') != -1:
             return JsonResponse({'success': True})
         return redirect('cart')
@@ -174,21 +174,21 @@ def contact(request):
     return render(request, 'contact.html')
 
 def login(request):
-    # handle login POST
+    
     if request.method == 'POST':
         identifier = request.POST.get('username', '').strip()
         password = request.POST.get('password', '').strip()
         user = None
         if identifier and password:
-            # treat identifier as username primarily
+            
             user = DeliveryPartner.objects.filter(username=identifier, password=password).first()
             if not user:
-                # fallback to email or phone if username didn't match
+                
                 user = DeliveryPartner.objects.filter(email=identifier, password=password).first()
             if not user:
                 user = DeliveryPartner.objects.filter(phone=identifier, password=password).first()
         if user:
-            # set session
+            
             request.session['user_id'] = user.id
             request.session['user_name'] = user.name
             messages.success(request, 'Successfully logged in')
@@ -204,7 +204,7 @@ def logout(request):
     return redirect('index')
 
 def add_to_cart_view(request, item_id):
-    # Logic to add the item with item_id to the cart
+    
     return HttpResponse(f"Item {item_id} added to cart.")
 
 def remove_from_cart(request, item_id):
@@ -220,9 +220,9 @@ def remove_from_cart_view(request, item_id):
     return HttpResponse(f"Item {item_id} removed from cart.")
 
 def buy(request):
-    # Render checkout page on GET, process payment on POST
+   
     cart = request.session.get('cart', [])
-    # menu mapping (same as cart())
+    
     menu = {
         1: {'name': 'Burger', 'price': 120},
         2: {'name': 'Chicken Burger', 'price': 120},
@@ -264,20 +264,18 @@ def buy(request):
             })
 
     if request.method == 'POST':
-        # process payment selection (this example simulates processing)
+        
         payment_method = request.POST.get('payment_method')
-        # simple validation: ensure cart not empty
+       
         if not cart_items:
             messages.info(request, 'Your cart is empty.')
             return redirect('cart')
 
-        # In a real app you would integrate with a payment gateway here.
-        # For now: clear cart and thank the user.
         request.session['cart'] = []
         messages.success(request, f'Payment method: {payment_method}. Purchase completed. Thank you!')
         return redirect('index')
 
-    # GET: show checkout page
+   
     if not cart_items:
         messages.info(request, 'Your cart is empty.')
         return redirect('cart')
