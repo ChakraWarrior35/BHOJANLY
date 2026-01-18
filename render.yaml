@@ -1,9 +1,0 @@
-services:
-  - type: web
-    name: Bhojanly-web
-    env: python
-    plan: free
-    # Leave repo/branch selection to the Render dashboard when creating the service.
-    # Use the dashboard or `render` CLI to connect this repo and branch.
-    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
-    startCommand: "gunicorn Bhojanly.wsgi:application --bind 0.0.0.0:$PORT"
