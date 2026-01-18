@@ -1,0 +1,429 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Our Menu{% endblock title %}
+
+{% block body %}
+<style>
+/* Scoped styles for services page */
+.services-page * { box-sizing: border-box; }
+.services-page { background-color: #fefaf6; color: #333; padding: 20px; }
+.services-page h1 { text-align: center; font-size: 36px; color: #ff6f3c; margin-bottom: 30px; }
+.menu-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  justify-content: center;
+}
+.menu-card {
+  flex: 0 1 300px;
+  max-width: 300px;
+  min-width: 250px;
+  margin-bottom: 20px;
+  background-color: #fff;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+  padding-bottom: 15px;
+}
+.menu-card:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(0,0,0,0.2); }
+.menu-card img { width: 100%; height: 180px; object-fit: cover; border-top-left-radius: 15px; border-top-right-radius: 15px; }
+.menu-card h3 { margin: 12px 0 5px 0; font-size: 22px; color: #ff6f3c; }
+.menu-card p.category { font-size: 16px; font-weight: bold; color: #fff; padding: 5px 10px; display: inline-block; border-radius: 12px; margin-bottom: 8px; }
+.menu-card p.price { font-size: 18px; color: #333; margin-bottom: 10px; }
+.menu-card button { padding: 10px 18px; background-color: #ff6f3c; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: background 0.3s ease; }
+.menu-card button:hover { background-color: #ff8a5c; }
+.hero { background: url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1200&q=80") no-repeat center center/cover; height: 40vh; display: flex; align-items: center; justify-content: center; text-align: center; color: #fff; border-radius: 12px; margin-bottom: 30px; }
+.hero-text h1 { font-size: 44px; margin-bottom: 10px; }
+.hero-text p { font-size: 18px; margin-bottom: 15px; }
+.btn { background: #ff4757; color: #fff; padding: 12px 25px; border-radius: 30px; text-decoration: none; font-weight: bold; transition: 0.3s; }
+.btn:hover { background: #e84118; }
+@media (max-width: 720px) {
+  .hero { height: 30vh; }
+  .menu-grid { gap: 16px; }
+}
+/* Filter controls */
+.filter-controls { text-align: center; margin-bottom: 18px; }
+.filter-controls .filter-btn { padding: 8px 14px; margin: 0 6px; border-radius: 8px; border: none, cursor: pointer; font-weight: 700; }
+.filter-controls .filter-btn.active { box-shadow: 0 6px 18px rgba(0,0,0,0.12); transform: translateY(-2px); }
+.filter-controls .filter-btn[data-filter="veg"] { background: #60c65d; color: #fff; }
+.filter-controls .filter-btn[data-filter="nonveg"] { background: #6fa8ff; color: #fff; }
+.filter-controls .filter-btn[data-filter="all"] { background: #ff6f3c; color: #fff; }
+</style>
+
+<div class="services-page">
+  <section class="hero">
+    <div class="hero-text">
+      <h1>Delicious Meals Delivered To You</h1>
+      <p>Explore our diverse menu and satisfy your cravings with just a click.</p>
+      <a class="btn" href="#menu-grid">Browse Menu</a>
+    </div>
+  </section>
+
+  <h1 id="menu-grid">Our Menu</h1>
+  <div class="filter-controls">
+    <button class="filter-btn active" data-filter="all">ALL</button>
+    <button class="filter-btn" data-filter="veg">Veg</button>
+    <button class="filter-btn" data-filter="nonveg">Nonveg</button>
+  </div>
+  <!-- NONVEG ITEMS -->
+  <div class="menu-grid">
+    <div class="menu-card nonveg">
+      <img src="{% static 'myimage/Burger.jpg' %}" alt="Burger">
+      <h3>Chicken Burger</h3>
+      <p class="category fastfood">Fast Food</p>
+      <p class="price">₹120.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=2 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1" style="width:60px;margin-right:8px;">
+        <button type="submit">Add to Cart</button>
+      </form>
+   </div>
+
+    <div class="menu-card nonveg">
+    <img src="{% static 'myimage/Chicken Roll.jpg' %}" alt="Chicken Roll">
+    <h3>Chicken Roll</h3>
+    <p class="category fastfood">Fast Food</p>
+    <p class="price">₹60.0</p>
+    <form method="post" action="{% url 'add_to_cart' item_id=3 %}">
+      {% csrf_token %}
+      <input type="number" name="quantity" value="1" min="1">
+      <button type="submit">Add to Cart</button>
+    </form>
+    </div>
+
+    <div class="menu-card nonveg">
+      <img src="{% static 'myimage/Butter chicken.jpg' %}" alt="Butter Chicken">
+      <h3>Butter Chicken</h3>
+      <p class="category indian">Indian</p>
+      <p class="price">₹80.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=4 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+    <div class="menu-card nonveg">
+      <img src="{% static 'myimage/Egg Fried rice.jpg' %}" alt="Egg Fried Rice">
+      <h3>Egg Fried Rice</h3>
+      <p class="category chinese">Chinese</p>
+      <p class="price">₹120.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=5 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+
+    <div class="menu-card nonveg">
+      <img src="{% static 'myimage/Biriyani.jpg' %}" alt="Chicken Biryani">
+      <h3>Chicken Biryani</h3>
+      <p class="category indian">Indian</p>
+      <p class="price">₹160.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=6 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+
+    <div class="menu-card nonveg">
+      <img src="{% static 'myimage/chicken shawarma.jpg' %}" alt="Chicken Shawarma">
+      <h3>Chicken Shawarma</h3>
+      <p class="category indian">Indian</p>
+      <p class="price">₹120.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=8 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+
+    <div class="menu-card nonveg">
+      <img src="{% static 'myimage/Chicken Nuggets.jpg' %}" alt="Chicken Nuggets">
+      <h3>Chicken Nuggets</h3>
+      <p class="category indian">Indian</p>
+      <p class="price">₹90.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=9 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+
+    <div class="menu-card nonveg">
+      <img src="{% static 'myimage/Tandoori Chicken.jpg' %}" alt="Tandoori Chicken">
+      <h3>Tandoori Chicken</h3>
+      <p class="category indian">Indian</p>
+      <p class="price">₹80.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=10 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+
+    <div class="menu-card nonveg">
+      <img src="{% static 'myimage/Prawn Fry.jpg' %}" alt="Prawn Fry">
+      <h3>Prawn Fry</h3>
+      <p class="category indian">Indian</p>
+      <p class="price">₹100.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=11 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+
+    <div class="menu-card nonveg">
+      <img src="{% static 'myimage/Egg curry.jpg' %}" alt="Egg curry">
+      <h3>Egg curry</h3>
+      <p class="category indian">Indian</p>
+      <p class="price">₹60.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=12 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+
+
+<!-- VEG ITEMS -->
+    <div class="menu-card veg">
+      <img src="{% static 'myimage/Sandwich.jpg' %}" alt="Veg Sandwich">
+      <h3>Veg Sandwich</h3>
+      <p class="category fastfood">Fast Food</p>
+      <p class="price">₹90.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=14 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1" style="width:60px;margin-right:8px;">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+
+    <div class="menu-card veg">
+      <img src="{% static 'myimage/White Sauce Pasta.jpg' %}" alt="White Sauce Pasta">
+      <h3>White Sauce Pasta</h3>
+      <p class="category fastfood">Fast Food</p>
+      <p class="price">₹60.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=15 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1" style="width:60px;margin-right:8px;">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+
+    <div class="menu-card veg">
+      <img src="{% static 'myimage/French Fries.jpg' %}" alt="French Fries">
+      <h3>French Fries</h3>
+      <p class="category fastfood">Fast Food</p>
+      <p class="price">₹70.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=16 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1" style="width:60px;margin-right:8px;">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+
+    <div class="menu-card veg">
+      <img src="{% static 'myimage/Hakka Noodles.jpg' %}" alt="Veg Hakka Noodles">
+      <h3>Veg Hakka Noodles</h3>
+      <p class="category fastfood">Fast Food</p>
+      <p class="price">₹70.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=17 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1" style="width:60px;margin-right:8px;">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+
+    <div class="menu-card veg">
+      <img src="{% static 'myimage/Panner tikka.jpg' %}" alt="Paneer Tikka">
+      <h3>Paneer Tikka</h3>
+      <p class="category indian">Indian</p>
+      <p class="price">₹90.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=18 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1" style="width:60px;margin-right:8px;">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+
+    <div class="menu-card veg">
+      <img src="{% static 'myimage/Veg Biriyani.jpg' %}" alt="Veg Biryani">
+      <h3>Veg Biryani</h3>
+      <p class="category indian">Indian</p>
+      <p class="price">₹180.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=19 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1" style="width:60px;margin-right:8px;">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+
+    <div class="menu-card veg">
+      <img src="{% static 'myimage/Manchuriyan.jpg' %}" alt="Veg Manchurian">
+      <h3>Veg Manchurian</h3>
+      <p class="category indian">Indian</p>
+      <p class="price">₹150.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=20 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1" style="width:60px;margin-right:8px;">
+        <button type="submit">Add to Cart</button>
+      </form> 
+    </div>
+
+    <div class="menu-card veg">
+      <img src="{% static 'myimage/chola bhatura.jpg' %}" alt="Chole Bhature">
+      <h3>Chole Bhature</h3>
+      <p class="category indian">Indian</p>
+      <p class="price">₹50.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=21 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1" style="width:60px;margin-right:8px;">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+
+    <div class="menu-card veg">
+      <img src="{% static 'myimage/Masala Dosa.jpg' %}" alt="Masala Dosa">
+      <h3>Masala Dosa</h3>
+      <p class="category indian">Indian</p>
+      <p class="price">₹55.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=22 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1" style="width:60px;margin-right:8px;">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+
+    <div class="menu-card veg">
+      <img src="{% static 'myimage/Idli.jpg' %}" alt="Idli Sambar">
+      <h3>Idli Sambar</h3>
+      <p class="category indian">Indian</p>
+      <p class="price">₹40.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=23 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1" style="width:60px;margin-right:8px;">
+        <button type="submit">Add to Cart</button>
+      </form> 
+    </div>
+
+    <div class="menu-card veg">
+      <img src="{% static 'myimage/Veg cutlate.jpg' %}" alt="Veg Cutlet">
+      <h3>Veg Cutlet</h3>
+      <p class="category indian">Indian</p>
+      <p class="price">₹30.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=24 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1" style="width:60px;margin-right:8px;">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+
+    <div class="menu-card veg">
+      <img src="{% static 'myimage/veg springroll.jpeg' %}" alt="Veg Spring Rolls">
+      <h3>Veg Spring Rolls</h3>
+      <p class="category chinese">Chinese</p>
+      <p class="price">₹70.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=25 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1" style="width:60px;margin-right:8px;">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+
+    <div class="menu-card veg">
+      <img src="{% static 'myimage/Momo.jpg' %}" alt="Veg Momos">
+      <h3>Veg Momos</h3>
+      <p class="category chinese">Chinese</p>
+      <p class="price">₹80.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=26 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1" style="width:60px;margin-right:8px;">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+
+    <div class="menu-card veg">
+      <img src="{% static 'myimage/Pizza.jpg' %}" alt="Paneer Tikka">
+      <h3>Veg Pizza</h3>
+      <p class="category fastfood">Fast Food</p>
+      <p class="price">₹150.0</p>
+      <form method="post" action="{% url 'add_to_cart' item_id=27 %}">
+        {% csrf_token %}
+        <input type="number" name="quantity" value="1" min="1" style="width:60px;margin-right:8px;">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+    
+    <!-- Additional menu cards preserved similarly -->
+
+  </div>
+
+  <div style="text-align:center; margin-top:24px;">
+    <a class="btn" href="{% url 'cart' %}">View Cart</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  const buttons = document.querySelectorAll('.filter-btn');
+  const cards = document.querySelectorAll('.menu-card');
+  function setFilter(filter){
+    cards.forEach(c=>{
+      if(filter === 'all'){
+        c.style.display = '';
+        return;
+      }
+      if(filter === 'veg'){
+        c.style.display = c.classList.contains('veg') ? '' : 'none';
+        return;
+      }
+      if(filter === 'nonveg'){
+        c.style.display = c.classList.contains('nonveg') ? '' : 'none';
+        return;
+      }
+    });
+    buttons.forEach(b=> b.classList.toggle('active', b.getAttribute('data-filter') === filter));
+  }
+  buttons.forEach(b=> b.addEventListener('click', ()=> setFilter(b.getAttribute('data-filter'))));
+
+  // AJAX Add to Cart (requires login)
+  document.querySelectorAll('.menu-card form').forEach(function(form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      // if not authenticated, show login modal
+      if (!window.isAuthenticated) {
+        if (window.showLoginModal) window.showLoginModal();
+        return;
+      }
+      const url = form.action;
+      const formData = new FormData(form);
+      // Add CSRF token
+      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      fetch(url, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrftoken, 'X-Requested-With': 'XMLHttpRequest' },
+        body: formData
+      })
+      .then(response => response.json())
+      .then(json => {
+        if (json && json.success) {
+          alert('Item added to cart!');
+        } else if (json && json.error === 'login_required') {
+          if (window.showLoginModal) window.showLoginModal();
+        } else {
+          alert('Failed to add item to cart.');
+        }
+      })
+      .catch(() => alert('Error adding item to cart.'));
+    });
+  });
+})();
+</script>
+
+{% endblock body %}

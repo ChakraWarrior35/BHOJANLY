@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+{% comment %} all cart items are shown here and calculate the total price and a option to Buy {% endcomment %}
+{% block title %}Cart - Bhojanly{% endblock title %}
+
+{% block body %}
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #222;
+        color: #fff;
+        font-size: 1.1em;
+    }
+    th, td {
+        padding: 14px 12px;
+        text-align: left;
+        border-bottom: 1px solid #444;
+        color: #fff;
+    }
+    th {
+        background-color: #333;
+        color: #ff6f3c;
+        font-weight: bold;
+    }
+    tr:nth-child(even) {
+        background: #282828;
+    }
+    tr:hover {
+        background: #333;
+    }
+    .container h2, .container h3, .container p, .container {
+        color: #fff !important;
+    }
+    .container h3 {
+        margin-top: 18px;
+        color: #ff6f3c !important;
+    }
+    button {
+        background-color: #ff4d4d;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.2s;
+    }
+    button:hover {
+        background-color: #ff1a1a;
+    }
+    .container {
+        background: #181818;
+        border-radius: 10px;
+        padding: 30px 20px 30px 20px;
+        margin-top: 30px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
+</Style>
+    <div class="container mt-5">
+        <h2>Your Shopping Cart</h2>
+        {% if cart_items %}
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Qty</th>
+                    <th>Subtotal</th>
+                    <th>Action</th>
+                </tr>
+                {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>₹{{ item.price }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>₹{{ item.subtotal }}</td>
+                    <td>
+                        <form method="post" action="{% url 'remove_from_cart' item.item_id %}">
+                            {% csrf_token %}
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            <h3>Total: ₹{{ total }}</h3>
+            <a href="{% url 'buy' %}"><button type="button">Buy</button></a>
+        {% else %}
+            <H1><p>Your cart is empty.</p>
+        {% endif %}
+    </div>
+{% endblock body %}
