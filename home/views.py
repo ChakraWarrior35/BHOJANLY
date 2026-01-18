@@ -3,7 +3,7 @@ from home.models import DeliveryPartner
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 from .models import DeliveryPartner
 
 def creat_partner(request):
@@ -46,6 +46,7 @@ from django.shortcuts import render, HttpResponse, redirect
 from django.http import JsonResponse
 from datetime import datetime
 from home.models import Contact
+from django.views.decorators.csrf import ensure_csrf_cookie
 # Create your views here.
 def index(request):
     return render(request, 'index.html')
@@ -173,21 +174,22 @@ def contact(request):
             return render(request, 'contact.html', {'error': 'All fields are required.'})
     return render(request, 'contact.html')
 
+@ensure_csrf_cookie
 def login(request):
     # handle login POST
     if request.method == 'POST':
         identifier = request.POST.get('username', '').strip()
-        password = request.POST.get('password', '').strip()
+        raw_password = request.POST.get('password', '').strip()
         user = None
-        if identifier and password:
-            # treat identifier as username primarily
-            user = DeliveryPartner.objects.filter(username=identifier, password=password).first()
+        if identifier and raw_password:
+            # try to find user by username, then email, then phone
+            user = DeliveryPartner.objects.filter(username=identifier).first()
             if not user:
-                # fallback to email or phone if username didn't match
-                user = DeliveryPartner.objects.filter(email=identifier, password=password).first()
+                user = DeliveryPartner.objects.filter(email=identifier).first()
             if not user:
-                user = DeliveryPartner.objects.filter(phone=identifier, password=password).first()
-        if user:
+                user = DeliveryPartner.objects.filter(phone=identifier).first()
+
+        if user and check_password(raw_password, user.password):
             # set session
             request.session['user_id'] = user.id
             request.session['user_name'] = user.name
@@ -195,7 +197,8 @@ def login(request):
             return redirect('index')
         else:
             return render(request, 'login.html', {'error': 'Invalid credentials'})
-    return render(request,'login.html')
+
+    return render(request, 'login.html')
 
 def logout(request):
     request.session.pop('user_id', None)
