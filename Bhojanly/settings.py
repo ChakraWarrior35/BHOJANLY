@@ -1,19 +1,22 @@
 import os
 from pathlib import Path
+
 import dj_database_url
-import mysql.connector
+from dotenv import load_dotenv
+
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 
 SECRET_KEY = os.environ.get(
     'SECRET_KEY',
-    'django-insecure-4-*ka6xzp)%4yh53iax2^m7h_3@84%5_3ui^i8t&dabcqkh&7k'
+    'django-insecure-unsafe-secret-key-change-this'
 )
 
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = os.environ.get(
     'ALLOWED_HOSTS',
-    '127.0.0.1,localhost,.onrender.com'
+    '127.0.0.1,localhost,.onrender.com,.railway.app'
 ).split(',')
 
 INSTALLED_APPS = [
@@ -56,20 +59,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Bhojanly.wsgi.application'
 
-DATABASE_URL = os.environ.get('DATABASE_URL')
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'djongo',
+        'NAME': os.environ.get('DB_NAME'),
+        'CLIENT': {
+            'host': os.environ.get('DB_URL'),
+        }
     }
 }
-if DATABASE_URL:
-    DATABASES['default'] = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
-    if DATABASES['default']['ENGINE'] == 'django.db.backends.mysql':
-        DATABASES['default']['OPTIONS'] = {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        }
+
+
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -89,9 +89,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 if DEBUG:
-    STATICFILES_DIRS = [
-        BASE_DIR / 'static',
-    ]
+    STATICFILES_DIRS = [BASE_DIR / 'static']
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
