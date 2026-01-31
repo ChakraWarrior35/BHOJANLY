@@ -10,7 +10,7 @@ SECRET_KEY = os.environ.get(
     'django-insecure-unsafe-secret-key-change-this'
 )
 
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = os.environ.get('DEBUG', 'False') == 'False'
 
 ALLOWED_HOSTS = os.environ.get(
     'ALLOWED_HOSTS',

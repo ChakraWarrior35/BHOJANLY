@@ -36,7 +36,7 @@ def creat_partner(request):
         )
 
         messages.success(request, 'Account created successfully. You can now log in.')
-        return render(request, 'creat.html', {
+        return render(request, 'login.html', {
             'created': True,
             'email': email
         })
